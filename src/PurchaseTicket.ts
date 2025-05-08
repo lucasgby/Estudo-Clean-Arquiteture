@@ -1,20 +1,19 @@
-//import crypto from "crypto";
+import { Ticket } from "./Ticket";
 
-import pgp from "pg-promise";
+import { EventRepository } from "./EventRepository";
+import { TicketRepository } from "./TicketRepository";
 
 export class PurchaseTicket {
-  constructor() { }
+  constructor(readonly ticketRepository: TicketRepository, readonly eventRepository: EventRepository){}
 
   async execute(input: Input): Promise<Output> {
-    const ticketId = crypto.randomUUID();
-    const connection = pgp()("postgres:postgres:postgres@localhost:5432/cleanArquiteture");
-    const [event] = await connection.query("select * from lucas.event where event_id = $1", [input.eventId]);
+    const event = await this.eventRepository.getEvent(input.eventId);
+    const ticket = Ticket.create(input.eventId, input.email, event.price);
 
-    await connection.query(`insert into lucas.ticket (ticket_id, event_id, email, price, status, date) values
-      ($1, $2, $3, $4, $5, $6)`, [ticketId, input.eventId, input.email, parseFloat(event.prince), "created", new Date()]);
-    await connection.$pool.end();
+    await this.ticketRepository.saveTicket(ticket);
+
     return {
-      ticketId
+      ticketId: ticket.ticketId
     }
   }
 }
