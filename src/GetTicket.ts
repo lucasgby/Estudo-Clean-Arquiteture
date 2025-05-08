@@ -1,12 +1,12 @@
-import pgp from "pg-promise";
+import { TicketRepository } from "./TicketRepository";
 
 export class GetTicket {
-  constructor() {}
+
+  constructor(readonly ticketRepository: TicketRepository) {}
 
   async execute(ticketId: string): Promise<Output> {
-    const connection = pgp()("postgres:postgres:postgres@localhost:5432/cleanArquiteture");
-    const [ticket] = await connection.query("select * from lucas.ticket where ticket_id = $1", [ticketId]);
-    await connection.$pool.end();
+    const ticket = await this.ticketRepository.getTicket(ticketId);
+
     return ticket;
   }
 }
