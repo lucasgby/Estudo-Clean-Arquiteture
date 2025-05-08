@@ -10,7 +10,7 @@ create table lucas.event (
 );
 
 create table lucas.ticket (
-  ticket_id uui primary key,
+  ticket_id uuid primary key,
   event_id uuid,
   email text,
   price numeric,
@@ -19,4 +19,4 @@ create table lucas.ticket (
 );
 
 insert into lucas.event (event_id, description, price, date, capacity) values 
-('185ff433-a7df-4dd6-ac86-44d219645cb1', 'A', 100, '2024-10-10T10:00:00:00', 500);
+('185ff433-a7df-4dd6-ac86-44d219645cb1', 'A', 100, '2024-10-10 10:00:00', 500);
